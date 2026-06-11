@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Leads HCI 2026</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans pb-24">
+
+  <div id="loader" class="fixed inset-0 bg-slate-950/80 z-[200] hidden flex flex-col items-center justify-center">
+    <div class="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+    <p class="text-xs font-bold text-indigo-400 tracking-widest animate-pulse">MEMPROSES DATA...</p>
+  </div>
+
+  <div id="loginPage" class="fixed inset-0 bg-slate-950 z-[100] flex items-center justify-center p-6">
+    <div class="w-full max-w-sm bg-slate-900 rounded-3xl border border-slate-800 p-8 shadow-2xl relative overflow-hidden">
+      <div class="absolute -top-10 -right-10 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl text-white"></div>
+      <div class="text-center mb-8 relative z-10">
+        <div class="inline-flex bg-indigo-600 p-4 rounded-2xl mb-4 shadow-lg shadow-indigo-500/20">
+          <i class="fa-solid fa-user-shield text-2xl text-white"></i>
+        </div>
+        <h1 class="text-xl font-bold text-white">Workspace HCI 2026</h1>
+        <p class="text-xs text-slate-400 mt-1">Gunakan akun Anda untuk mengakses sistem</p>
+      </div>
+      <form onsubmit="handleLogin(event)" class="space-y-4 relative z-10">
+        <input type="text" id="username" required placeholder="Username" class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm focus:border-indigo-500 outline-none">
+        <input type="password" id="password" required placeholder="Password" class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm focus:border-indigo-500 outline-none">
+        <button type="submit" id="loginBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 py-3.5 rounded-xl font-bold text-sm transition-all shadow-lg">MASUK SISTEM</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="mainApp" class="hidden">
+    <header class="bg-slate-900/50 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 p-4">
+      <div class="max-w-md mx-auto flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-database text-indigo-500"></i>
+          <h1 id="pageTitle" class="font-bold text-white">Dashboard</h1>
+        </div>
+        <button onclick="loadDashboardData()" class="text-slate-400 p-2 active:scale-90 transition-transform"><i class="fa-solid fa-rotate"></i></button>
+      </div>
+    </header>
+
+    <main class="max-w-md mx-auto px-4 mt-6">
+      
+      <div id="viewDashboard" class="space-y-4">
+        <div class="bg-gradient-to-br from-indigo-900/50 to-slate-900 border border-indigo-500/20 rounded-3xl p-6 shadow-xl relative overflow-hidden">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Total Leads</p>
+          <h3 id="statTotal" class="text-5xl font-black mt-1 text-white">0</h3>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+            <p class="text-[9px] font-black text-emerald-400 uppercase">NOS</p>
+            <h4 id="statNos" class="text-2xl font-bold">0</h4>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+            <p class="text-[9px] font-black text-blue-400 uppercase">NOA</p>
+            <h4 id="statNoa" class="text-2xl font-bold">0</h4>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+            <p class="text-[9px] font-black text-amber-400 uppercase">Pending</p>
+            <h4 id="statPending" class="text-2xl font-bold">0</h4>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+            <p class="text-[9px] font-black text-rose-400 uppercase">Cancel</p>
+            <h4 id="statCancel" class="text-2xl font-bold">0</h4>
+          </div>
+        </div>
+      </div>
+
+      <div id="viewForm" class="hidden pb-10">
+        <form id="leadsForm" onsubmit="submitForm(event)" class="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-4 shadow-xl">
+          
+          <div>
+            <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Nama Konsumen</label>
+            <input type="text" id="nama_konsumen" required class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm outline-none focus:border-indigo-500">
+          </div>
+
+          <div>
+            <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">No. Telp</label>
+            <input type="tel" id="no_telepon" required class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm outline-none focus:border-indigo-500">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Kategori</label>
+              <select id="kategori" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm outline-none text-white"><option value="RO" class="bg-slate-900">RO</option><option value="NC" class="bg-slate-900">NC</option></select>
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Produk</label>
+              <select id="jenis_produk" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm outline-none text-white">
+                <option value="FEL" class="bg-slate-900">FEL</option>
+                <option value="MPGG" class="bg-slate-900">MPGG</option>
+                <option value="Sepeda" class="bg-slate-900">Sepeda</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">VAS (Bisa > 1)</label>
+            <div class="space-y-2 p-3 bg-slate-950 border border-slate-800 rounded-xl">
+              <label class="flex items-center space-x-3 text-xs"><input type="checkbox" name="vas" value="Aman+" class="w-4 h-4 text-indigo-500 bg-slate-800 rounded"> <span>Aman+</span></label>
+              <label class="flex items-center space-x-3 text-xs"><input type="checkbox" name="vas" value="Santai" class="w-4 h-4 text-indigo-500 bg-slate-800 rounded"> <span>Santai</span></label>
+              <label class="flex items-center space-x-3 text-xs"><input type="checkbox" name="vas" value="ADLD/EasyCover" class="w-4 h-4 text-indigo-500 bg-slate-800 rounded"> <span>ADLD / EasyCover</span></label>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">SAI</label>
+              <select id="sai" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm outline-none text-white">
+                <option value="None" class="bg-slate-900">None</option>
+                <option value="Silver" class="bg-slate-900">Silver</option>
+                <option value="Gold" class="bg-slate-900">Gold</option>
+                <option value="Platinum" class="bg-slate-900">Platinum</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Result</label>
+              <select id="status" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm outline-none text-white">
+                <option value="NOS" class="bg-slate-900">NOS</option>
+                <option value="NOA" class="bg-slate-900">NOA</option>
+                <option value="Pending" class="bg-slate-900">Pending</option>
+                <option value="Cancel" class="bg-slate-900">Cancel</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Catatan</label>
+            <textarea id="catatan" rows="2" class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm outline-none focus:border-indigo-500"></textarea>
+          </div>
+
+          <button type="submit" id="submitBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 py-4 rounded-xl font-bold text-sm shadow-lg active:scale-95 transition-all">SIMPAN LEADS</button>
+        </form>
+      </div>
+    </main>
+
+    <nav class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 h-16 flex items-center z-40">
+      <div class="max-w-md mx-auto w-full grid grid-cols-2">
+        <button onclick="switchView('dashboard')" id="navDashboard" class="flex flex-col items-center justify-center text-indigo-500 font-bold">
+          <i class="fa-solid fa-chart-line mb-1 text-lg"></i><span class="text-[9px] uppercase">Beranda</span>
+        </button>
+        <button onclick="switchView('form')" id="navForm" class="flex flex-col items-center justify-center text-slate-500">
+          <i class="fa-solid fa-plus-circle mb-1 text-lg"></i><span class="text-[9px] uppercase">Input</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <div id="toast" class="fixed bottom-24 left-1/2 -translate-x-1/2 bg-slate-800 border border-slate-700 px-6 py-3 rounded-2xl shadow-2xl transition-all transform translate-y-20 opacity-0 z-[300] text-xs font-bold whitespace-nowrap text-white"></div>
+
+  <script>
+    // ========================================================
+    // GANTI TEKS DI BAWAH INI DENGAN URL WEB APP BAGIAN 1 ANDA
+    // ========================================================
+    const API_URL = "https://script.google.com/macros/s/AKfycbyTEMSTXagYPPKj_Tf3fGMSvevdWC6JN8lvLALJBdWp92M57Aucv9U6QezZNqE-XmRV/exec"; 
+
+    async function callAPI(payload) {
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload),
+          redirect: "follow"
+        });
+        return await response.json();
+      } catch (error) {
+        return { success: false, status: "error", message: "Gagal terhubung ke Database" };
+      }
+    }
+
+    function showToast(message) {
+      const t = document.getElementById('toast');
+      t.innerHTML = `<i class="fa-solid fa-bell mr-2 text-indigo-400"></i> ${message}`;
+      t.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 3500);
+    }
+
+    function switchView(view) {
+      document.getElementById('viewDashboard').classList.toggle('hidden', view !== 'dashboard');
+      document.getElementById('viewForm').classList.toggle('hidden', view !== 'form');
+      document.getElementById('navDashboard').className = `flex flex-col items-center justify-center ${view === 'dashboard' ? 'text-indigo-500 font-bold' : 'text-slate-500'}`;
+      document.getElementById('navForm').className = `flex flex-col items-center justify-center ${view === 'form' ? 'text-indigo-500 font-bold' : 'text-slate-500'}`;
+      document.getElementById('pageTitle').innerText = view === 'dashboard' ? "Dashboard" : "Tambah Leads";
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const loginBtn = document.getElementById('loginBtn');
+      loginBtn.disabled = true; 
+      loginBtn.innerText = "VERIFIKASI...";
+      
+      const res = await callAPI({
+        action: "login",
+        username: document.getElementById('username').value,
+        password: document.getElementById('password').value
+      });
+
+      if (res.success) {
+        document.getElementById('loginPage').classList.add('hidden');
+        document.getElementById('mainApp').classList.remove('hidden');
+        showToast("Login Berhasil!");
+        loadDashboardData();
+      } else {
+        showToast(res.message || "Gagal masuk.");
+        loginBtn.disabled = false; 
+        loginBtn.innerText = "MASUK SISTEM";
+      }
+    }
+
+    async function loadDashboardData() {
+      document.getElementById('loader').classList.remove('hidden');
+      const res = await callAPI({ action: "getStats" });
+      document.getElementById('loader').classList.add('hidden');
+      
+      if (res.status === "success") {
+        document.getElementById('statTotal').innerText = res.data.total;
+        document.getElementById('statNos').innerText = res.data.nos;
+        document.getElementById('statNoa').innerText = res.data.noa;
+        document.getElementById('statPending').innerText = res.data.pending;
+        document.getElementById('statCancel').innerText = res.data.cancel;
+      } else {
+        showToast("Gagal memuat data statistik");
+      }
+    }
+
+    async function submitForm(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true; 
+      btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> MENYIMPAN...';
+      
+      const vas = Array.from(document.querySelectorAll('input[name="vas"]:checked')).map(c => c.value).join(', ');
+      
+      const formData = {
+        nama_konsumen: document.getElementById('nama_konsumen').value,
+        no_telepon: document.getElementById('no_telepon').value,
+        kategori: document.getElementById('kategori').value,
+        jenis_produk: document.getElementById('jenis_produk').value,
+        pilihan_vas: vas || "None",
+        sai: document.getElementById('sai').value,
+        status: document.getElementById('status').value,
+        catatan: document.getElementById('catatan').value || "-"
+      };
+
+      const res = await callAPI({ action: "simpan", formData: formData });
+      
+      btn.disabled = false; 
+      btn.innerText = "SIMPAN LEADS";
+      
+      if (res.status === "success") {
+        showToast(res.message);
+        document.getElementById('leadsForm').reset();
+        setTimeout(() => { 
+          switchView('dashboard'); 
+          loadDashboardData(); 
+        }, 1000);
+      } else {
+        showToast(res.message || "Terjadi kesalahan.");
+      }
+    }
+  </script>
+</body>
+</html>
